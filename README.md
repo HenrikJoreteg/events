@@ -1,5 +1,7 @@
 
-# events
+# events-mixin
+
+  Browserify compatible fork of component/events.
 
   Higher level dom event management with direct and delegate event handling support.
 
@@ -9,12 +11,12 @@
 
 ## Installation
 
-    $ component install component/events
+    $ npm install events-mixin
 
 ## Example
 
 ```js
-var events = require('events');
+var events = require('events-mixin');
 var el = document.querySelector('.user');
 
 var view = new UserView(el);

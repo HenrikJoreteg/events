@@ -1,21 +1,17 @@
 {
-  "name": "component-events",
-  "version": "1.0.6",
+  "name": "events-mixin",
+  "version": "1.0.0",
   "dependencies": {
     "component-event": "0.1.3",
-    "component-delegate": "0.2.1"
+    "delegate-events": "1.0.0"
   },
   "component": {
     "scripts": {
       "events/index.js": "index.js"
     }
   },
-  "browser": {
-    "delegate": "component-delegate",
-    "event": "component-event"
-  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/component/events.git"
+    "url": "https://github.com/HenrikJoreteg/events.git"
   }
 }
