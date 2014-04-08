@@ -5,6 +5,7 @@
 
 var events = require('component-event');
 var delegate = require('delegate-events');
+var forceCaptureEvents = ['focus', 'blur'];
 
 /**
  * Expose `Events`.
@@ -122,13 +123,14 @@ Events.prototype.unbind = function(event, method){
 
   // no bindings for this event
   var bindings = this._events[event];
+  var capture = (forceCaptureEvents.indexOf(event) !== -1);
   if (!bindings) return;
 
   // no bindings for this method
   var cb = bindings[method];
   if (!cb) return;
 
-  events.unbind(this.el, event, cb);
+  events.unbind(this.el, event, cb, capture);
 };
 
 /**
