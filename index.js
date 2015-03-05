@@ -78,7 +78,17 @@ Events.prototype.bind = function(event, method){
   // callback
   function cb(){
     var a = [].slice.call(arguments).concat(args);
-    obj[method].apply(obj, a);
+
+    if (typeof method === 'function') {
+        method.apply(obj, a);    
+        return;
+    }
+    
+    if (!obj[method]) {
+        throw new Error(method + ' method is not defined');
+    } else {
+        obj[method].apply(obj, a);
+    }
   }
 
   // bind
