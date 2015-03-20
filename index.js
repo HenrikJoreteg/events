@@ -30,6 +30,7 @@ function Events(el, obj) {
   this.el = el;
   this.obj = obj;
   this._events = {};
+  this._subscrIdCounter = 0;
 }
 
 /**
@@ -37,8 +38,9 @@ function Events(el, obj) {
  */
 
 Events.prototype.sub = function(event, method, cb){
+  var methodName = typeof method === 'function' ? method._subscrId : method;
   this._events[event] = this._events[event] || {};
-  this._events[event][method] = cb;
+  this._events[event][methodName] = cb;
 };
 
 /**
@@ -74,12 +76,13 @@ Events.prototype.bind = function(event, method){
   var name = e.name;
   var method = method || 'on' + name;
   var args = [].slice.call(arguments, 2);
+  var isMethodAnonFn = typeof method === 'function';
 
   // callback
   function cb(){
     var a = [].slice.call(arguments).concat(args);
 
-    if (typeof method === 'function') {
+    if (isMethodAnonFn) {
         method.apply(obj, a);    
         return;
     }
@@ -96,6 +99,11 @@ Events.prototype.bind = function(event, method){
     cb = delegate.bind(el, e.selector, name, cb);
   } else {
     events.bind(el, name, cb);
+  }
+
+  if(isMethodAnonFn) {
+    method._subscrId = this._subscrIdCounter;
+    this._subscrIdCounter++;
   }
 
   // subscription for unbinding
