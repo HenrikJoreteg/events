@@ -61,47 +61,68 @@ Events.prototype.sub = function(event, method, cb){
  *    events.bind('click a.sort-ascending', 'sort', 'asc')
  *    events.bind('click a.sort-descending', 'sort', 'desc')
  *
- * @param {String} event
- * @param {String|function} [method]
+ *  Multiple events handling:
+ *
+ *    events.bind({
+ *      'click .remove': 'remove',
+ *      'click .add': 'add'
+ *    });
+ *
+ * @param {String|object} - object is used for multiple binding,
+ *                               string for single event binding
+ * @param {String|function} [arg2] - method to call (optional)
+ * @param {*} [arg3] - data for single event binding (optional)
  * @return {Function} callback
  * @api public
  */
 
-Events.prototype.bind = function(event, method){
-  var e = parse(event);
-  var el = this.el;
-  var obj = this.obj;
-  var name = e.name;
-  var method = method || 'on' + name;
-  var args = [].slice.call(arguments, 2);
+Events.prototype.bind = function(arg1, arg2){
+  var bindEvent = function(event, method) {
+    var e = parse(event);
+    var el = this.el;
+    var obj = this.obj;
+    var name = e.name;
+    var method = method || 'on' + name;
+    var args = [].slice.call(arguments, 2);
 
-  // callback
-  function cb(){
-    var a = [].slice.call(arguments).concat(args);
+    // callback
+    function cb(){
+      var a = [].slice.call(arguments).concat(args);
 
-    if (typeof method === 'function') {
-        method.apply(obj, a);    
-        return;
+      if (typeof method === 'function') {
+          method.apply(obj, a);
+          return;
+      }
+
+      if (!obj[method]) {
+          throw new Error(method + ' method is not defined');
+      } else {
+          obj[method].apply(obj, a);
+      }
     }
-    
-    if (!obj[method]) {
-        throw new Error(method + ' method is not defined');
+
+    // bind
+    if (e.selector) {
+      cb = delegate.bind(el, e.selector, name, cb);
     } else {
-        obj[method].apply(obj, a);
+      events.bind(el, name, cb);
+    }
+
+    // subscription for unbinding
+    this.sub(name, method, cb);
+
+    return cb;
+  };
+
+  if (typeof arg1 == 'string') {
+    bindEvent.apply(this, arguments);
+  } else {
+    for(var key in arg1) {
+      if (arg1.hasOwnProperty(key)) {
+        bindEvent.call(this, key, arg1[key]);
+      }
     }
   }
-
-  // bind
-  if (e.selector) {
-    cb = delegate.bind(el, e.selector, name, cb);
-  } else {
-    events.bind(el, name, cb);
-  }
-
-  // subscription for unbinding
-  this.sub(name, method, cb);
-
-  return cb;
 };
 
 /**

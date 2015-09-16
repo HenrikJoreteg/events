@@ -96,6 +96,16 @@ events.bind('click .sort-asc', 'sort', 'asc')
 events.bind('click .sort-dsc', 'sort', 'dsc')
 ```
 
+  There is also a shorthand syntax
+  for binding multiple events with one call:
+
+```js
+events.bind({
+  'click .remove': 'remove',
+  'click .close', 'hide'
+});
+```
+
 ### Events.unbind([event], [method])
 
   There are three flavours of unbinding -- you may unbind _all_
