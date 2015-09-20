@@ -102,7 +102,7 @@ events.bind('click .sort-dsc', 'sort', 'dsc')
 ```js
 events.bind({
   'click .remove': 'remove',
-  'click .close', 'hide'
+  'click .close': 'hide'
 });
 ```
 
