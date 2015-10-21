@@ -1,6 +1,9 @@
 {
   "name": "events-mixin",
   "version": "1.2.0",
+  "scripts": {
+    "build": "browserify -r ./index.js:events  > build/build.js"
+  },
   "component": {
     "scripts": {
       "events/index.js": "index.js"
